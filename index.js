@@ -69,7 +69,7 @@ async function run() {
       const updatedDoc = {
         $set: {
           name: updatedUser.name,
-          sectors: updatedUser.sectors,
+          // sectors: updatedUser.sectors,
         },
       };
       const result = await usersCollection.updateOne(
