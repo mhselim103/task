@@ -77,7 +77,7 @@ async function run() {
         updatedDoc,
         options
       );
-      res.json(result);
+      res.send(result);
     });
   } finally {
     // await client.close();
