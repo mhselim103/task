@@ -53,22 +53,20 @@ async function run() {
     });
     // users management
 
-    app.post("/users", async (req, res) => {
-      const user = req.body;
-      console.log(user);
-      const result = await usersCollection.insertOne(user);
-      // console.log("user inserted", user);
-      res.json(result);
-    });
-
-    app.put("/users", async (req, res) => {
-      const user = req.body;
+    app.put("/users/:id", async (req, res) => {
+      const user = req.params.name;
+      const updatedUser = req.body;
       const filter = { name: user.name };
       const options = { upsert: true };
-      const updateDoc = { $set: user };
+      const updatedDoc = {
+        $set: {
+          name: updatedUser.name,
+          sectors: updatedUser.sectors,
+        },
+      };
       const result = await usersCollection.updateOne(
         filter,
-        updateDoc,
+        updatedDoc,
         options
       );
       res.json(result);
