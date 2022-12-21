@@ -1,7 +1,6 @@
 const express = require("express");
-const { MongoClient } = require("mongodb");
+const { MongoClient, ObjectId } = require("mongodb");
 const cors = require("cors");
-const objectId = require("mongodb").ObjectId;
 require("dotenv").config();
 
 const app = express();
@@ -49,39 +48,39 @@ async function run() {
       // console.log(users);
       res.json(users);
     });
-    app.get("/users/:name", async (req, res) => {
-      const id = req.params.name;
-      const query = { name: id };
-      const package = await usersCollection.findOne(query);
-      console.log("hello from inside dynamic route");
-      res.json(package);
+    app.get("/users/:id", async (req, res) => {
+      const id = req.params.id;
+      // console.log(id);
+      const query = { _id: ObjectId(id) };
+      const singleUser = await usersCollection.findOne(query);
+      // console.log("hello from inside dynamic route");
+      res.json(singleUser);
     });
     // users management
 
     app.post("/users", async (req, res) => {
       const user = req.body;
-      console.log(user);
+      // console.log(user);
       const result = await usersCollection.insertOne(user);
       // console.log("user inserted", user);
       res.json(result);
     });
-
     app.put("/users/:id", async (req, res) => {
-      const user = req.params.id;
-      const updatedUser = req.body;
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const user = req.body;
       console.log(user);
-      const filter = { name: user.name };
-      const options = { upsert: true };
-      const updatedDoc = {
+      const option = { upsert: true };
+      const updatedUser = {
         $set: {
-          name: updatedUser.name,
-          // sectors: updatedUser.sectors,
+          name: user.name,
+          sectors: user.sectors,
         },
       };
       const result = await usersCollection.updateOne(
         filter,
-        updatedDoc,
-        options
+        updatedUser,
+        option
       );
       res.send(result);
     });
