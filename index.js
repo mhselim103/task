@@ -9,13 +9,18 @@ const port = process.env.PORT || 5000;
 
 // middleware
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT"],
+  })
+);
 app.use(express.json());
 
 //mongodb connection
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.yd5hs.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
-console.log(uri);
+// console.log(uri);
 
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
@@ -62,8 +67,9 @@ async function run() {
     });
 
     app.put("/users/:id", async (req, res) => {
-      const user = req.params.name;
+      const user = req.params.id;
       const updatedUser = req.body;
+      console.log(user);
       const filter = { name: user.name };
       const options = { upsert: true };
       const updatedDoc = {
